@@ -18,16 +18,17 @@ describe Oystercard do
    expect{ subject.top_up(100) }.to raise_error("Exceeds top up limit: #{Oystercard::LIMIT}")
  end
 
- it 'deducts money from card' do
-   subject.top_up 90
-   expect(subject.deduct(50)).to eq (40)
- end
+ # it 'deducts money from card' do
+ #   subject.top_up 90
+ #   expect(subject.deduct(50)).to eq (40)
+ # end
 
   it 'touches out' do
-  #   # subject.touch_in
-     #subject.in_use
-  #   # expect(subject).not_to be_in_journey?
     expect(subject.touch_out).to eq (false)
+  end
+
+  it "deducts £4 when touches out" do
+    expect{ subject.touch_out }.to change{subject.balance }.by (-4)
   end
 
   describe "touch_in" do
@@ -42,7 +43,7 @@ describe Oystercard do
 
     it 'is in a journey if i touch in' do
       subject.top_up(10)
-      subject.touch_in  
+      subject.touch_in
       expect(subject.in_journey?).to eq(true)
     end
   end
