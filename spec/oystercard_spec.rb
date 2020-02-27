@@ -23,27 +23,40 @@ describe Oystercard do
  #   expect(subject.deduct(50)).to eq (40)
  # end
 
-  it 'touches out' do
-    expect(subject.touch_out).to eq (false)
-  end
+  # it 'touches out' do
+  #   expect(subject.touch_out("nil")).to eq (false)
+  # end
 
   it "deducts £4 when touches out" do
-    expect{ subject.touch_out }.to change{subject.balance }.by (-4)
+    expect{ subject.touch_out("Farringdon") }.to change{subject.balance }.by (-4)
   end
 
-  describe "touch_in" do
+  it "returns station name as nil when touches out" do
+    subject.touch_out("Farringdon")
+    expect(subject.touch_out("Farringdon")).to be_nil
+  end
+
+  describe "#touch_in" do
 
     it 'raise_error if balance is under £1 when i touch in' do
-      expect{ subject.touch_in }.to raise_error "Not enough money"
+      expect{ subject.touch_in("Farringdon") }.to raise_error "Not enough money"
     end
 
     it "touches in" do
       expect(subject).to respond_to(:touch_in)
     end
 
+    #it "stores the entry station" do
+
+    it "gives us station name when touches in" do
+      subject.top_up(10)
+      subject.touch_in("Farringdon")
+      expect(subject.entry_station).to eq "Farringdon"
+    end
+
     it 'is in a journey if i touch in' do
       subject.top_up(10)
-      subject.touch_in
+      subject.touch_in("Farringdon")
       expect(subject.in_journey?).to eq(true)
     end
   end
